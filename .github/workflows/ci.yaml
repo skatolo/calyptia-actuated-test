@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    pull_request:
+        branches:
+        - '*'
+    push:
+        branches:
+        - master
+        - main
+    workflow_dispatch:
+
+jobs:
+    specs:
+        name: specs
+        runs-on: actuated-aarch64
+        steps:
+        - uses: actions/checkout@v1
+        - name: Check specs
+          run: |
+            ./specs.sh
+
+    registry-mirror:
+        runs-on: [actuated-aarch64]
+        steps:
+
+        - name: Setup mirror
+          uses: self-actuated/hub-mirror@master
+
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Pull image using cache
+          run: |
+            docker pull alpine:latest
+          shell: bash
