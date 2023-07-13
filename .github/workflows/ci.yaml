@@ -13,15 +13,26 @@ on:
 jobs:
     specs:
         name: specs
-        runs-on: actuated-aarch64
+        strategy:
+            matrix:
+                runner:
+                    - actuated-arm64
+                    -  actuated
+        runs-on: ${{ matrix.runner }}
         steps:
-        - uses: actions/checkout@v1
+        - uses: actions/checkout@v3
         - name: Check specs
           run: |
             ./specs.sh
 
     registry-mirror:
-        runs-on: [actuated-aarch64]
+        strategy:
+            matrix:
+                runner:
+                    - actuated-arm64
+                    -  actuated
+        runs-on: ${{ matrix.runner }}
+
         steps:
 
         - name: Setup mirror
