@@ -56,9 +56,8 @@ jobs:
             - 'v1.27.3'
             - 'v1.26.6'
             - 'v1.25.11'
-            - 'v1.25.0'
-            - 'v1.24.4'
-            - 'v1.23.5'
+            - 'v1.24.15'
+            - 'v1.23.17'
           runner:
             - actuated
             - ubuntu-latest
@@ -73,6 +72,7 @@ jobs:
             with:
               node_image: kindest/node:${{ matrix.k8s-release }}
               cluster_name: kind
+              wait: 300s
 
     kind-test-18:
       name: Test KIND 1.8.0
@@ -84,9 +84,8 @@ jobs:
             - 'v1.27.3'
             - 'v1.26.6'
             - 'v1.25.11'
-            - 'v1.25.0'
-            - 'v1.24.4'
-            - 'v1.23.5'
+            - 'v1.24.15'
+            - 'v1.23.17'
           runner:
             - actuated
             - ubuntu-latest
@@ -101,3 +100,4 @@ jobs:
           with:
             node_image: kindest/node:${{ matrix.k8s-release }}
             cluster_name: kind
+            wait: 300s
