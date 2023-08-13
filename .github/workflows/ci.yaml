@@ -61,7 +61,7 @@ jobs:
             - 'v1.23.5'
           runner:
             - actuated
-            - ubuntu
+            - ubuntu-latest
       steps:
           # Prevent any image throttling from DockerHub (e.g. for Kind)
           - name: Set up Actuated mirror
@@ -73,7 +73,6 @@ jobs:
             with:
               node_image: kindest/node:${{ matrix.k8s-release }}
               cluster_name: kind
-              wait: 300s
 
     kind-test-18:
       name: Test KIND 1.8.0
@@ -90,7 +89,7 @@ jobs:
             - 'v1.23.5'
           runner:
             - actuated
-            - ubuntu
+            - ubuntu-latest
       steps:
         # Prevent any image throttling from DockerHub (e.g. for Kind)
         - name: Set up Actuated mirror
@@ -102,4 +101,3 @@ jobs:
           with:
             node_image: kindest/node:${{ matrix.k8s-release }}
             cluster_name: kind
-            wait: 300s
