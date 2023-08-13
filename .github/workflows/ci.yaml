@@ -65,7 +65,7 @@ jobs:
             uses: self-actuated/hub-mirror@master
 
           - name: Create k8s Kind Cluster
-            uses: helm/kind-action@v1.7.0
+            uses: helm/kind-action@${{ matrix.kind-action-version }}
             timeout-minutes: 5
             with:
               node_image: kindest/node:${{ matrix.k8s-release }}
