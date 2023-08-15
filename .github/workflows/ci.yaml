@@ -46,46 +46,67 @@ jobs:
             docker pull alpine:latest
           shell: bash
 
-    kind-test:
-      name: Test KIND 1.7.0
+    # kind-test:
+    #   name: Test KIND 1.7.0
+    #   runs-on: ${{ matrix.runner }}
+    #   strategy:
+    #     fail-fast: false
+    #     matrix:
+    #       k8s-release:
+    #         - 'v1.27.3'
+    #         - 'v1.26.6'
+    #         - 'v1.25.11'
+    #         - 'v1.24.15'
+    #         - 'v1.23.17'
+    #       runner:
+    #         - actuated
+    #         - ubuntu-latest
+    #   steps:
+    #       # Prevent any image throttling from DockerHub (e.g. for Kind)
+    #       - name: Set up Actuated mirror
+    #         uses: self-actuated/hub-mirror@master
+
+    #       - name: Create k8s Kind Cluster
+    #         uses: helm/kind-action@v1.7.0
+    #         timeout-minutes: 5
+    #         with:
+    #           node_image: kindest/node:${{ matrix.k8s-release }}
+    #           cluster_name: kind
+    #           wait: 300s
+
+    # kind-test-18:
+    #   name: Test KIND 1.8.0
+    #   runs-on: ${{ matrix.runner }}
+    #   strategy:
+    #     fail-fast: false
+    #     matrix:
+    #       k8s-release:
+    #         - 'v1.27.3'
+    #         - 'v1.26.6'
+    #         - 'v1.25.11'
+    #         - 'v1.24.15'
+    #         - 'v1.23.17'
+    #       runner:
+    #         - actuated
+    #         - ubuntu-latest
+    #   steps:
+    #     # Prevent any image throttling from DockerHub (e.g. for Kind)
+    #     - name: Set up Actuated mirror
+    #       uses: self-actuated/hub-mirror@master
+
+    #     - name: Create k8s Kind Cluster
+    #       uses: helm/kind-action@v1.8.0
+    #       timeout-minutes: 5
+    #       with:
+    #         node_image: kindest/node:${{ matrix.k8s-release }}
+    #         cluster_name: kind
+    #         wait: 300s
+
+    kind-ingress-test:
       runs-on: ${{ matrix.runner }}
       strategy:
         fail-fast: false
         matrix:
-          k8s-release:
-            - 'v1.27.3'
-            - 'v1.26.6'
-            - 'v1.25.11'
-            - 'v1.24.15'
-            - 'v1.23.17'
-          runner:
-            - actuated
-            - ubuntu-latest
-      steps:
-          # Prevent any image throttling from DockerHub (e.g. for Kind)
-          - name: Set up Actuated mirror
-            uses: self-actuated/hub-mirror@master
-
-          - name: Create k8s Kind Cluster
-            uses: helm/kind-action@v1.7.0
-            timeout-minutes: 5
-            with:
-              node_image: kindest/node:${{ matrix.k8s-release }}
-              cluster_name: kind
-              wait: 300s
-
-    kind-test-18:
-      name: Test KIND 1.8.0
-      runs-on: ${{ matrix.runner }}
-      strategy:
-        fail-fast: false
-        matrix:
-          k8s-release:
-            - 'v1.27.3'
-            - 'v1.26.6'
-            - 'v1.25.11'
-            - 'v1.24.15'
-            - 'v1.23.17'
           runner:
             - actuated
             - ubuntu-latest
@@ -94,10 +115,42 @@ jobs:
         - name: Set up Actuated mirror
           uses: self-actuated/hub-mirror@master
 
-        - name: Create k8s Kind Cluster
-          uses: helm/kind-action@v1.8.0
-          timeout-minutes: 5
+        - uses: helm/kind-action@v1.8.0
           with:
-            node_image: kindest/node:${{ matrix.k8s-release }}
-            cluster_name: kind
-            wait: 300s
+            install_only: true
+
+        - run: |
+              cat <<EOF | kind create cluster --config=-
+              kind: Cluster
+              apiVersion: kind.x-k8s.io/v1alpha4
+              nodes:
+              - role: control-plane
+                kubeadmConfigPatches:
+                - |
+                  kind: InitConfiguration
+                  nodeRegistration:
+                    kubeletExtraArgs:
+                      node-labels: "ingress-ready=true"
+                extraPortMappings:
+                - containerPort: 80
+                  hostPort: 80
+                  protocol: TCP
+                - containerPort: 443
+                  hostPort: 443
+                  protocol: TCP
+              EOF
+              kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+              # we cannot just wait immediately, it triggers a race so first ensure something spins up to wait on
+              until kubectl get pod --namespace ingress-nginx -l app.kubernetes.io/component=controller | grep -q 'Running'
+              do
+                  sleep 10
+              done
+
+              # Now wait for the condition
+              kubectl wait --namespace ingress-nginx \
+                  --for=condition=ready pod \
+                  --selector=app.kubernetes.io/component=controller \
+                  --timeout=90s
+          shell: bash
+          timeout-minutes: 10
