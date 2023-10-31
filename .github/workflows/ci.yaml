@@ -20,7 +20,7 @@ jobs:
                     -  actuated
         runs-on: ${{ matrix.runner }}
         steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - name: Check specs
           run: |
             ./specs.sh
@@ -39,7 +39,7 @@ jobs:
           uses: self-actuated/hub-mirror@master
 
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
 
         - name: Pull image using cache
           run: |
