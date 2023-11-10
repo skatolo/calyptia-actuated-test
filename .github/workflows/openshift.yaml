@@ -29,7 +29,7 @@ jobs:
 
             - name: Configure CRC
               run: |
-                /usr/local/bin/crc config set pull-secretfile "$PWD/pull-secret.txt"
+                /usr/local/bin/crc config set pull-secret-file "$PWD/pull-secret.txt"
                 /usr/local/bin/crc config set kubeadmin-password admin
                 /usr/local/bin/crc config set consent-telemetry no
                 /usr/local/bin/crc config set disable-update-check true
