@@ -14,7 +14,7 @@ jobs:
             - name: Set up user
               run: |
                 sudo groupadd libvirt || true
-                sudo groupmod -a -U $USER libvirt
+                sudo usermod -a -G libvirt $USER
               shell: bash
 
             - name: Download CRC
