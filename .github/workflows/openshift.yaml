@@ -27,6 +27,13 @@ jobs:
               run: echo '${{ secrets.OPENSHIFT_PULL_SECRET }}' > ./pull-secret.txt
               shell: bash
 
+            - name: Debug
+              run: |
+                whoami
+                groups
+                sudo groups
+              shell: bash
+
             - name: Configure CRC
               run: |
                 /usr/local/bin/crc config set pull-secret-file "$PWD/pull-secret.txt"
