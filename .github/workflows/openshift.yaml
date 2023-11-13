@@ -35,10 +35,11 @@ jobs:
 
             - name: Configure CRC
               run: |
-                sudo /usr/local/bin/crc config set pull-secret-file "$PWD/pull-secret.txt"
-                sudo /usr/local/bin/crc config set kubeadmin-password admin
-                sudo /usr/local/bin/crc config set consent-telemetry no
-                sudo /usr/local/bin/crc config set disable-update-check true
+                /usr/local/bin/crc config set pull-secret-file "$PWD/pull-secret.txt"
+                /usr/local/bin/crc config set kubeadmin-password admin
+                /usr/local/bin/crc config set consent-telemetry no
+                /usr/local/bin/crc config set disable-update-check true
+                /usr/local/bin/crc config set skip-check-user-in-libvirt-group true
               shell: bash
 
             - name: Set up CRC
@@ -46,7 +47,7 @@ jobs:
               shell: bash
 
             - name: Start up CRC VM
-              run: sudo /usr/local/bin/crc start
+              run: /usr/local/bin/crc start
               shell: bash
 
             - name: Allow SSH login remotely to work with it
