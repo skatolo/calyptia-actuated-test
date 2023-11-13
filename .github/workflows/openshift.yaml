@@ -6,6 +6,8 @@ jobs:
     # https://console.redhat.com/openshift/create/local
     create-openshift-local-runner:
         runs-on: actuated-8cpu-16gb
+        permissions:
+          id-token: write
         steps:
             - name: Install packages
               run: sudo apt-get update && sudo apt-get install -y qemu-kvm libvirt-daemon libvirt-daemon-system network-manager
