@@ -11,6 +11,12 @@ jobs:
               run: sudo apt-get update && sudo apt-get install -y qemu-kvm libvirt-daemon libvirt-daemon-system network-manager
               shell: bash
 
+            - name: Set up user
+              run: |
+                sudo groupadd libvirt || true
+                sudo groupmod -a -U $USER libvirt
+              shell: bash
+
             - name: Download CRC
               run: curl -sSfLO https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/crc/latest/crc-linux-amd64.tar.xz
               shell: bash
@@ -25,15 +31,6 @@ jobs:
 
             - name: Provide pull secret
               run: echo '${{ secrets.OPENSHIFT_PULL_SECRET }}' > ./pull-secret.txt
-              shell: bash
-
-            - name: Debug
-              run: |
-                sudo groupadd libvirt
-                sudo groupmod -a -U $USER libvirt
-                whoami
-                groups
-                sudo groups
               shell: bash
 
             - name: Configure CRC
