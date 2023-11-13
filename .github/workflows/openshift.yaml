@@ -45,11 +45,15 @@ jobs:
               shell: bash
 
             - name: Set up CRC
-              run: exec newgrp - && /usr/local/bin/crc setup --log-level debug
+              run: |
+                exec newgrp -
+                /usr/local/bin/crc setup --log-level debug
               shell: bash
 
             - name: Start up CRC VM
-              run: exec newgrp - && /usr/local/bin/crc start --log-level debug
+              run: |
+                exec newgrp -
+                /usr/local/bin/crc start --log-level debug
               shell: bash
 
             - name: Allow SSH login remotely to work with it
