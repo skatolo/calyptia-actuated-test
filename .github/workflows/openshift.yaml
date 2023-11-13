@@ -43,7 +43,7 @@ jobs:
               shell: bash
 
             - name: Set up CRC
-              run: sudo /usr/local/bin/crc setup
+              run: /usr/local/bin/crc setup
               shell: bash
 
             - name: Start up CRC VM
