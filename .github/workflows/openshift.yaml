@@ -16,9 +16,8 @@ jobs:
             - name: Set up user
               run: |
                 sudo groupadd libvirt || true
-                sudo usermod -a -G libvirt $USER
+                sudo usermod -a -G libvirt $USER || true
                 sudo systemctl enable --now NetworkManager
-                exec newgrp libvirt
               shell: bash
 
             - name: Download CRC
@@ -43,15 +42,14 @@ jobs:
                 /usr/local/bin/crc config set kubeadmin-password admin
                 /usr/local/bin/crc config set consent-telemetry no
                 /usr/local/bin/crc config set disable-update-check true
-                /usr/local/bin/crc config set skip-check-user-in-libvirt-group true
               shell: bash
 
             - name: Set up CRC
-              run: /usr/local/bin/crc setup
+              run: sudo -s -u ${USER} /usr/local/bin/crc setup
               shell: bash
 
             - name: Start up CRC VM
-              run: /usr/local/bin/crc start
+              run: sudo -s -u ${USER} /usr/local/bin/crc start
               shell: bash
 
             - name: Allow SSH login remotely to work with it
