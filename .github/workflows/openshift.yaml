@@ -42,13 +42,13 @@ jobs:
                 /usr/local/bin/crc config set skip-check-user-in-libvirt-group true
               shell: bash
 
-            - name: Set up CRC
-              run: /usr/local/bin/crc setup
-              shell: bash
+            # - name: Set up CRC
+            #   run: /usr/local/bin/crc setup
+            #   shell: bash
 
-            - name: Start up CRC VM
-              run: /usr/local/bin/crc start
-              shell: bash
+            # - name: Start up CRC VM
+            #   run: /usr/local/bin/crc start
+            #   shell: bash
 
             - name: Allow SSH login remotely to work with it
               uses: self-actuated/connect-ssh@master
