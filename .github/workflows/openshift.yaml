@@ -29,6 +29,8 @@ jobs:
 
             - name: Debug
               run: |
+                sudo groupadd libvirt
+                sudo groupmod -a -U $USER libvirt
                 whoami
                 groups
                 sudo groups
