@@ -45,12 +45,13 @@ jobs:
               shell: bash
 
             - name: Set up CRC
-              run: sudo -s -u ${USER} /usr/local/bin/crc setup
+              run: exec newgrp - && /usr/local/bin/crc setup --log-level debug
               shell: bash
 
             - name: Start up CRC VM
-              run: sudo -s -u ${USER} /usr/local/bin/crc start
+              run: exec newgrp - && /usr/local/bin/crc start --log-level debug
               shell: bash
 
             - name: Allow SSH login remotely to work with it
+              if: always()
               uses: self-actuated/connect-ssh@master
