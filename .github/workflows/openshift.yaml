@@ -42,17 +42,17 @@ jobs:
                 /usr/local/bin/crc config set kubeadmin-password admin
                 /usr/local/bin/crc config set consent-telemetry no
                 /usr/local/bin/crc config set disable-update-check true
+                /usr/local/bin/crc config set skip-check-user-in-libvirt-group true
+                /usr/local/bin/crc config set skip-check-libvirt-group-active true
               shell: bash
 
             - name: Set up CRC
               run: |
-                exec newgrp -
                 /usr/local/bin/crc setup --log-level debug
               shell: bash
 
             - name: Start up CRC VM
               run: |
-                exec newgrp -
                 /usr/local/bin/crc start --log-level debug
               shell: bash
 
