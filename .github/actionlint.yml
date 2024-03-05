@@ -1,3 +1,4 @@
 self-hosted-runner:
   labels:
     - actuated
+    - actuated-arm64
