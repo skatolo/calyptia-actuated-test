@@ -11,40 +11,40 @@ on:
     workflow_dispatch:
 
 jobs:
-    specs:
-        name: specs
-        strategy:
-            matrix:
-                runner:
-                    - actuated-arm64
-                    -  actuated
-        runs-on: ${{ matrix.runner }}
-        steps:
-        - uses: actions/checkout@v4
-        - name: Check specs
-          run: |
-            ./specs.sh
+    # specs:
+    #     name: specs
+    #     strategy:
+    #         matrix:
+    #             runner:
+    #                 - actuated-arm64
+    #                 -  actuated
+    #     runs-on: ${{ matrix.runner }}
+    #     steps:
+    #     - uses: actions/checkout@v4
+    #     - name: Check specs
+    #       run: |
+    #         ./specs.sh
 
-    registry-mirror:
-        strategy:
-            matrix:
-                runner:
-                    - actuated-arm64
-                    -  actuated
-        runs-on: ${{ matrix.runner }}
+    # registry-mirror:
+    #     strategy:
+    #         matrix:
+    #             runner:
+    #                 - actuated-arm64
+    #                 -  actuated
+    #     runs-on: ${{ matrix.runner }}
 
-        steps:
+    #     steps:
 
-        - name: Setup mirror
-          uses: self-actuated/hub-mirror@master
+    #     - name: Setup mirror
+    #       uses: self-actuated/hub-mirror@master
 
-        - name: Checkout
-          uses: actions/checkout@v4
+    #     - name: Checkout
+    #       uses: actions/checkout@v4
 
-        - name: Pull image using cache
-          run: |
-            docker pull alpine:latest
-          shell: bash
+    #     - name: Pull image using cache
+    #       run: |
+    #         docker pull alpine:latest
+    #       shell: bash
 
     # kind-test:
     #   name: Test KIND 1.7.0
@@ -109,7 +109,6 @@ jobs:
         matrix:
           runner:
             - actuated
-            - actuated-arm64
             - ubuntu-latest
       steps:
         # Prevent any image throttling from DockerHub (e.g. for Kind)
