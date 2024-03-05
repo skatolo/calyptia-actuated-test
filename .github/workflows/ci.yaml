@@ -115,7 +115,7 @@ jobs:
         - name: Set up Actuated mirror
           uses: self-actuated/hub-mirror@master
 
-        - uses: helm/kind-action@v1.8.0
+          uses: helm/kind-action@v1.9.0
           with:
             install_only: true
 
@@ -152,5 +152,16 @@ jobs:
                   --for=condition=ready pod \
                   --selector=app.kubernetes.io/component=controller \
                   --timeout=90s
+
+              # Now apply an ingress
+              kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/usage.yaml
+
+              # should output "foo-app"
+              until curl -sSfL localhost/foo/hostname; do
+                  sleep 5
+              done
+              # should output "bar-app"
+              curl localhost/bar/hostname
+
           shell: bash
           timeout-minutes: 10
